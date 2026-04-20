@@ -622,45 +622,6 @@ def fig_division_scatter(leaderboard: pd.DataFrame):
 _DIV_BAR_COLORS = ["#06b6d4", "#38bdf8", "#64748b", "#fbbf24", "#fb7185"]
 
 
-def _division_bar_height(n: int) -> int:
-    return int(min(720, max(280, 48 + n * 22)))
-
-
-def fig_division_teams_distribution(teams: pd.DataFrame):
-    """Count of teams per division — every team appears in exactly one division bucket."""
-    t = teams.dropna(subset=["category_name"])
-    if t.empty:
-        fig = px.bar()
-        fig.update_layout(**plotly_theme(), title="Distribution of teams (no data)")
-        return fig
-    c = (
-        t.groupby("category_name", observed=True)
-        .size()
-        .reset_index(name="n_teams")
-        .sort_values("n_teams", ascending=True)
-    )
-    fig = px.bar(
-        c,
-        x="n_teams",
-        y="category_name",
-        orientation="h",
-        color="n_teams",
-        color_continuous_scale=_DIV_BAR_COLORS,
-    )
-    fig.update_layout(
-        **plotly_theme(),
-        height=_division_bar_height(len(c)),
-        title="Distribution of teams — count per division (every team counted once)",
-        xaxis_title="Number of teams",
-        yaxis_title="",
-        showlegend=False,
-    )
-    fig.update_coloraxes(showscale=False)
-    fig.update_yaxes(autorange="reversed", tickfont=dict(size=10))
-    fig.update_traces(hovertemplate="%{y}<br>%{x} teams<extra></extra>")
-    return fig
-
-
 def fig_division_participation_vs_speed(runners: pd.DataFrame):
     """Bubble: big divisions vs. typical speed vs. how many teams entered."""
     m = runners.dropna(subset=["category_name"]).copy()
@@ -970,16 +931,9 @@ def main() -> None:
             unsafe_allow_html=True,
         )
         st.caption(
-            "Compare **individual** finish patterns, **how teams are spread** across divisions, and participation vs. speed — "
+            "Compare **individual** finish patterns, **team** scores vs. roster size, and participation vs. typical speed — "
             "each chart highlights a different slice of the race."
         )
-        st.markdown(
-            '<div class="section-head">Distribution of teams</div>',
-            unsafe_allow_html=True,
-        )
-        st.caption("Every team lives in exactly one division; bars show how entries are split across categories.")
-        st.plotly_chart(fig_division_teams_distribution(teams), use_container_width=True)
-
         r1a, r1b = st.columns(2, gap="medium")
         with r1a:
             st.plotly_chart(fig_division_box(runners), use_container_width=True)
