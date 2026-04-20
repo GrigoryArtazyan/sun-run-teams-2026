@@ -28,6 +28,13 @@ C_GRID = "#475569"
 C_TEXT = "#e2e8f0"
 C_TEXT_MUTED = "#94a3b8"
 
+# Shown under the main title on every page (what this app is for).
+DASHBOARD_INTRO = (
+    "**What this is:** an unofficial viewer for the **Vancouver Sun Run** 10K **team competition** — "
+    "team scores use each club’s **eight fastest** finishers. Browse race-wide stats, divisions, "
+    "a single team’s roster, or look up a runner. Built from the public Sportstats results extract."
+)
+
 def fmt_hms(total_seconds: float) -> str:
     s = int(round(total_seconds))
     h, rem = divmod(s, 3600)
@@ -179,22 +186,27 @@ section.main > div.block-container {
 [data-testid="stMetricValue"] { color: var(--color-text-primary) !important; }
 [data-testid="stMetricDelta"] { color: var(--color-text-tertiary) !important; }
 header[data-testid="stHeader"] {
-  background: linear-gradient(180deg, #1a2332 0%, var(--color-bg) 100%) !important;
+  background: var(--color-bg) !important;
   border-bottom: 1px solid var(--color-border) !important;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
 }
-/* Streamlit st.navigation (position=sidebar) — vertical page list */
+/* Sidebar page nav — plain ordered list, no icons */
 [data-testid="stSidebar"] [data-testid="stNavigation"] {
   flex-direction: column !important;
   align-items: stretch !important;
-  gap: 0.35rem !important;
+  gap: 0 !important;
   width: 100% !important;
-  padding: 0.25rem 0 0.75rem !important;
+  padding: 0.35rem 0 0 !important;
 }
-[data-testid="stHeader"] [data-testid="stNavigation"] {
-  align-items: center !important;
-  gap: 0.2rem !important;
-  padding-left: 0.35rem !important;
+[data-testid="stSidebar"] [data-testid="stNavigation"] ul {
+  list-style: decimal !important;
+  list-style-position: outside !important;
+  padding-left: 1.35rem !important;
+  margin: 0 !important;
+}
+[data-testid="stSidebar"] [data-testid="stNavigation"] li {
+  display: list-item !important;
+  padding: 0.1rem 0 !important;
+  margin: 0 !important;
 }
 [data-testid="stSidebarNavLink"] a,
 [data-testid="stSidebarNavLink"] span,
@@ -202,9 +214,8 @@ header[data-testid="stHeader"] {
 [data-testid="stNavLink"] span {
   color: var(--color-text-secondary) !important;
   font-weight: 500 !important;
-  border-radius: 8px !important;
-  padding: 0.35rem 0.7rem !important;
-  transition: background 0.15s ease, color 0.15s ease !important;
+  border-radius: 6px !important;
+  padding: 0.5rem 0.6rem !important;
 }
 [data-testid="stSidebar"] [data-testid="stSidebarNavLink"] a,
 [data-testid="stSidebar"] [data-testid="stSidebarNavLink"] span {
@@ -214,33 +225,16 @@ header[data-testid="stHeader"] {
 }
 [data-testid="stSidebarNavLink"] a:hover,
 [data-testid="stNavLink"] a:hover {
-  background: rgba(56, 189, 248, 0.1) !important;
+  background: var(--color-bg-muted) !important;
   color: var(--color-text-primary) !important;
 }
 [data-testid="stSidebarNavLink"][aria-current="page"] a,
 [data-testid="stSidebarNavLink"][aria-current="page"] span,
 [data-testid="stNavLink"][aria-current="page"] a,
 [data-testid="stNavLink"][aria-current="page"] span {
-  color: #e0f2fe !important;
-  background: linear-gradient(135deg, rgba(56, 189, 248, 0.22) 0%, rgba(51, 65, 85, 0.55) 100%) !important;
-  box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.35) !important;
+  color: var(--accent) !important;
+  background: var(--color-bg-muted) !important;
 }
-/* Fallback: top nav links (Streamlit wraps in header; test ids vary by version) */
-header[data-testid="stHeader"] nav[aria-label="Page navigation"] a,
-header[data-testid="stHeader"] [data-testid="stNavigation"] a {
-  color: var(--color-text-secondary) !important;
-  font-weight: 500 !important;
-  border-radius: 8px !important;
-  padding: 0.35rem 0.7rem !important;
-  text-decoration: none !important;
-}
-header[data-testid="stHeader"] nav[aria-label="Page navigation"] a[aria-current="page"],
-header[data-testid="stHeader"] [data-testid="stNavigation"] a[aria-current="page"] {
-  color: #e0f2fe !important;
-  background: linear-gradient(135deg, rgba(56, 189, 248, 0.22) 0%, rgba(51, 65, 85, 0.55) 100%) !important;
-  box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.35) !important;
-}
-[data-testid="stSidebar"] { background-color: var(--color-bg) !important; }
 [data-testid="stSidebar"] > div { background-color: var(--color-bg) !important; }
 /* Default text on dark */
 [data-testid="stMarkdownContainer"] p, [data-testid="stMarkdownContainer"] li {
@@ -350,64 +344,38 @@ div[data-testid="stTabs"] [aria-selected="true"] {
   border: 1px solid var(--color-border) !important;
   color: var(--accent) !important;
 }
-/* Left sidebar — branded nav */
+/* Left sidebar — minimal */
 [data-testid="stSidebar"] {
   border-right: 1px solid var(--color-border) !important;
-  min-width: 268px !important;
-  max-width: 320px !important;
-  background:
-    linear-gradient(180deg, rgba(56, 189, 248, 0.06) 0%, transparent 28%),
-    linear-gradient(165deg, #1a2332 0%, var(--color-bg) 48%, #0c1220 100%) !important;
-  box-shadow:
-    4px 0 32px rgba(0, 0, 0, 0.45),
-    inset -1px 0 0 rgba(255, 255, 255, 0.04);
+  min-width: 220px !important;
+  max-width: 280px !important;
+  background: var(--color-bg) !important;
 }
 [data-testid="stSidebar"] [data-testid="stVerticalBlock"] {
-  padding-top: 1.1rem;
-  padding-left: 0.65rem;
-  padding-right: 0.65rem;
-  padding-bottom: 1.25rem;
-  gap: 0.65rem;
+  padding-top: 1rem;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+  padding-bottom: 1rem;
+  gap: 0.5rem;
 }
 [data-testid="stSidebar"] .nav-brand-wrap {
-  position: relative;
-  padding: 0.85rem 0.9rem 1.05rem;
-  margin-bottom: 0.15rem;
-  border-radius: clamp(10px, 1.2vw, 14px);
-  border: 1px solid rgba(56, 189, 248, 0.22);
-  background:
-    linear-gradient(145deg, rgba(56, 189, 248, 0.14) 0%, rgba(15, 23, 42, 0.4) 55%, rgba(15, 23, 42, 0.85) 100%);
-  box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.06) inset,
-    0 8px 28px rgba(0, 0, 0, 0.35);
-  overflow: hidden;
-}
-[data-testid="stSidebar"] .nav-brand-wrap::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--accent), #22d3ee 45%, rgba(56, 189, 248, 0.2) 100%);
-  opacity: 0.95;
+  padding: 0 0 0.75rem 0;
+  margin-bottom: 0.35rem;
+  border-bottom: 1px solid var(--color-border);
+  background: transparent !important;
 }
 [data-testid="stSidebar"] .nav-brand {
-  font-size: 1.12rem;
-  font-weight: 700;
-  letter-spacing: -0.03em;
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
   color: var(--color-text-primary);
-  line-height: 1.15;
-  text-shadow: 0 1px 12px rgba(56, 189, 248, 0.25);
+  line-height: 1.2;
 }
 [data-testid="stSidebar"] .nav-sub {
-  font-size: 0.68rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.16em;
-  color: var(--accent);
-  margin-top: 0.35rem;
-  opacity: 0.92;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  margin-top: 0.25rem;
 }
 </style>
 """
@@ -426,6 +394,7 @@ def page_header(n_teams: int, n_runners: int, n_divisions: int) -> None:
         """,
         unsafe_allow_html=True,
     )
+    st.caption(DASHBOARD_INTRO)
 
 
 def fig_overview_histogram(runners: pd.DataFrame):
@@ -995,10 +964,10 @@ def main() -> None:
 
     nav = st.navigation(
         [
-            st.Page(_page_overview, title="Overview", icon="📊", default=True),
-            st.Page(_page_my_team, title="My Team", icon="👥"),
-            st.Page(_page_divisions, title="Divisions", icon="📈"),
-            st.Page(_page_runner_lookup, title="Runner lookup", icon="🔎"),
+            st.Page(_page_overview, title="Overview", default=True),
+            st.Page(_page_my_team, title="My Team"),
+            st.Page(_page_divisions, title="Divisions"),
+            st.Page(_page_runner_lookup, title="Runner lookup"),
         ],
         position="sidebar",
         expanded=True,
