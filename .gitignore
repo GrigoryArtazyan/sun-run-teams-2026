@@ -1,3 +1,5 @@
 .venv/
 __pycache__/
 .env
+# Large one-off download of the source HTML (optional; re-fetch in notebook)
+data/SunRun2026_Teams_raw.htm
